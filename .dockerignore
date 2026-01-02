@@ -1,0 +1,15 @@
+# .dockerignore
+.git
+.gitignore
+.env
+.env.*
+vendor
+node_modules
+public/storage
+storage/framework
+storage/logs
+bootstrap/cache/*
+Dockerfile*
+docker-compose*
+README.md
+LICENSE

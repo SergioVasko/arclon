@@ -1,0 +1,60 @@
+version: "3.9"
+
+services:
+  php:
+    build:
+      context: .
+      dockerfile: docker/php/Dockerfile
+    container_name: arclon_php
+    volumes:
+      - .:/var/www/html
+    depends_on:
+      - db
+    networks:
+      - arclon_network
+
+  web:
+    image: nginx:alpine
+    container_name: arclon_web
+    ports:
+      - "8080:80"
+    volumes:
+      - .:/var/www/html
+      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - php
+    networks:
+      - arclon_network
+
+  node:
+    image: node:20-alpine
+    container_name: arclon_node
+    working_dir: /var/www/html
+    volumes:
+      - .:/var/www/html
+    tty: true
+    command: sh
+    networks:
+      - arclon_network
+
+  db:
+    image: mysql:8.0
+    container_name: arclon_db
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: arclon
+      MYSQL_USER: arclon_user
+      MYSQL_PASSWORD: arclon_password
+    ports:
+      - "3306:3306"
+    volumes:
+      - arclon_db_data:/var/lib/mysql
+      - ./docker/db/:/var/shared
+    networks:
+      - arclon_network
+
+volumes:
+  arclon_db_data:
+
+networks:
+  arclon_network:
