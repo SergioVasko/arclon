@@ -20,4 +20,10 @@ RUN apt-get update && apt-get install -y \
 
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
+# Install Laravel installer globally + create symlink dynamically
+RUN composer global require laravel/installer \
+ && BIN_DIR=$(composer global config bin-dir --absolute) \
+ && ln -sf "$BIN_DIR/laravel" /usr/local/bin/laravel \
+ && chmod +x /usr/local/bin/laravel   # sometimes needed if permissions are odd
+
 WORKDIR /var/www/html
