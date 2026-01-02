@@ -103,15 +103,31 @@ docker compose down
 ```bash
 # Enter the container
 docker compose exec php bash
+```
 
+```bash
 # Run artisan commands
 docker compose exec php php artisan queue:work --tries=3
 docker compose exec php php artisan cache:clear
 docker compose exec php php artisan optimize:clear
+```
 
+```bash
+# Run migrations & seeders
+docker compose exec php php artisan migrate --seed
+```
+```bash
+# Install NPM packages & build assets
+docker compose exec php npm install
+docker compose exec php npm run build
+```
+
+```bash
 # Check MySQL
 docker compose exec db mysql -u arclon_user -parclon_passweord arclon
+```
 
+```bash
 # Restart everything
 docker compose down && docker compose -p arclon up -d
 ```
