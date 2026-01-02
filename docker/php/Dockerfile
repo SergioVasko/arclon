@@ -1,5 +1,7 @@
-FROM php:8.2-fpm
+# Use official PHP 8.3 FPM image
+FROM php:8.3-fpm
 
+# Install system dependencies and PHP extensions
 RUN apt-get update && apt-get install -y \
     git \
     unzip \
@@ -18,12 +20,14 @@ RUN apt-get update && apt-get install -y \
     bcmath \
     gd
 
+# Set working directory
+WORKDIR /var/www/html
+
+# Copy Composer from official image
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
-# Install Laravel installer globally + create symlink dynamically
-RUN composer global require laravel/installer \
- && BIN_DIR=$(composer global config bin-dir --absolute) \
- && ln -sf "$BIN_DIR/laravel" /usr/local/bin/laravel \
- && chmod +x /usr/local/bin/laravel   # sometimes needed if permissions are odd
+# Create non-root user
+RUN useradd -ms /bin/bash appuser
 
-WORKDIR /var/www/html
+# Switch to appuser
+USER appuser
